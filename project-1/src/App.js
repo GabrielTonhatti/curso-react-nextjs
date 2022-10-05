@@ -1,57 +1,50 @@
 import { Component } from "react";
 import "./App.css";
+import { PostCard } from "./components/PostCard";
 
 class App extends Component {
-    state = {
-        posts: [],
-    };
+  state = {
+    posts: [],
+  };
 
-    componentDidMount() {
-        this.loadPosts();
-    }
+  componentDidMount() {
+    this.loadPosts();
+  }
 
-    loadPosts = async () => {
-        const postsResponse = fetch(
-            "https://jsonplaceholder.typicode.com/posts"
-        );
-        const photosResponse = fetch(
-            "https://jsonplaceholder.typicode.com/photos"
-        );
+  loadPosts = async () => {
+    const postsResponse = fetch("https://jsonplaceholder.typicode.com/posts");
+    const photosResponse = fetch("https://jsonplaceholder.typicode.com/photos");
 
-        const [posts, photos] = await Promise.all([
-            postsResponse,
-            photosResponse,
-        ]);
-        const postsJson = await posts.json();
-        const photosJson = await photos.json();
+    const [posts, photos] = await Promise.all([postsResponse, photosResponse]);
+    const postsJson = await posts.json();
+    const photosJson = await photos.json();
 
-        const postsAndPhotos = postsJson.map((post, index) => ({
-            ...post,
-            cover: photosJson[index].url,
-        }));
+    const postsAndPhotos = postsJson.map((post, index) => ({
+      ...post,
+      cover: photosJson[index].url,
+    }));
 
-        this.setState({ posts: postsAndPhotos });
-    };
+    this.setState({ posts: postsAndPhotos });
+  };
 
-    render() {
-        const { posts } = this.state;
+  render() {
+    const { posts } = this.state;
 
-        return (
-            <section className="container">
-                <div className="posts">
-                    {posts.map((post) => (
-                        <div key={post.id} className="post">
-                            <img src={post.cover} alt={post.title} />
-                            <div className="post-content">
-                                <h1>{post.title}</h1>
-                                <p>{post.body}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-        );
-    }
+    return (
+      <section className="container">
+        <div className="posts">
+          {posts.map((post) => (
+            <PostCard
+              key={post.id}
+              title={post.title}
+              cover={post.cover}
+              body={post.body}
+            />
+          ))}
+        </div>
+      </section>
+    );
+  }
 }
 
 export default App;
