@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { Component, useCallback, useEffect, useState } from "react";
 import { Button } from "../../components/Button";
 import { Posts } from "../../components/Posts";
 import { TextInput } from "../../components/TextInput";
@@ -68,3 +68,27 @@ export const Home = () => {
     </section>
   );
 };
+
+export class Home2 extends Component {
+  state = {
+    counter: 0,
+  };
+
+  handleClick = () => {
+    this.setState(
+      (prevState, prevProps) => {
+        return { counter: prevState.counter + prevProps.numberToIncrement };
+      },
+      () => console.log("POST", this.state.counter)
+    );
+  };
+
+  render() {
+    return (
+      <div className="container">
+        <h1>{this.state.counter}</h1>
+        <button onClick={this.handleClick}>Increment</button>
+      </div>
+    );
+  }
+}
