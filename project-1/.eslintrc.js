@@ -25,5 +25,6 @@ module.exports = {
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
+    // 'no-magic-numbers': ['error', { ignore: [0] }],
   },
 };
