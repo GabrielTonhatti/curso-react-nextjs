@@ -21,7 +21,14 @@ const handlers = [
           id: 2,
           title: 'title2',
           body: 'body2',
-          url: 'img1.jpg',
+          url: 'img2.jpg',
+        },
+        {
+          userId: 3,
+          id: 3,
+          title: 'title3',
+          body: 'body3',
+          url: 'img3.jpg',
         },
       ]),
     );
@@ -77,6 +84,22 @@ describe('<Home />', () => {
 
     userEvent.type(search, 'post does not exist');
     expect(screen.getByText('Não existem posts =(')).toBeInTheDocument();
+  });
+
+  it('should load more posts', async () => {
+    render(<Home />);
+    const noMorePosts = screen.getByText('Não existem posts =(');
+
+    expect.assertions(2);
+
+    await waitForElementToBeRemoved(noMorePosts);
+
+    const button = screen.getByRole('button', { name: /load more posts/i });
+
+    userEvent.click(button);
+
+    expect(screen.getByRole('heading', { name: 'title3 3' })).toBeInTheDocument();
+    expect(button).toBeDisabled();
   });
 
   afterEach(() => server.resetHandlers());
