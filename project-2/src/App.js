@@ -1,48 +1,39 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.css';
 import logo from './logo.svg';
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
+function App() {
+  const [reverse, setReverse] = useState(false);
+  const [counter, setCounter] = useState(0);
+  const reverseClass = reverse ? 'reverse' : '';
 
-class App extends Component {
-  state = {
-    reverse: false,
+  const handleClick = () => {
+    setReverse(!reverse);
   };
 
-  handleClick = () => {
-    const { reverse } = this.state;
-    this.setState({ reverse: !reverse });
+  const handleIncrement = () => {
+    setCounter(counter + 1);
   };
 
-  render() {
-    const { reverse } = this.state;
-    const reverseClass = reverse ? 'reverse' : '';
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className={`App-logo ${reverseClass}`} alt="logo" />
 
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className={`App-logo ${reverseClass}`} alt="logo" />
-          <button onClick={this.handleClick} type="button">
+        <h1>Contador: {counter}</h1>
+        <p>
+          <button onClick={handleClick} type="button">
             Reverse {reverseClass}
           </button>
-        </header>
-      </div>
-    );
-  }
+        </p>
+        <p>
+          <button onClick={handleIncrement} type="button">
+            Increment {counter}
+          </button>
+        </p>
+      </header>
+    </div>
+  );
 }
 
 export default App;
