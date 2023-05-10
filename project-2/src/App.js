@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import './App.css';
 import PropsTypes from 'prop-types';
 
-const Button = ({ incrementButton }) => <button onClick={() => incrementButton(10)}>+</button>;
+const Button = memo(function Button({ incrementButton }) {
+  console.log('Filho, renderizou!');
+
+  return <button onClick={() => incrementButton(100)}>+</button>;
+});
 
 Button.propTypes = {
   incrementButton: PropsTypes.func.isRequired,
@@ -11,7 +15,9 @@ Button.propTypes = {
 function App() {
   const [counter, setCounter] = useState(0);
 
-  const incrementCounter = (num) => setCounter(counter + num);
+  const incrementCounter = useCallback((num) => setCounter((prevCounter) => prevCounter + num), []);
+
+  console.log('Pai, renderizou!');
 
   return (
     <div className="App">
