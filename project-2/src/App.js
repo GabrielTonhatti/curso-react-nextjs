@@ -1,12 +1,45 @@
+import { useReducer } from 'react';
 import './App.css';
-import Div from './components/Div';
-import { AppContext } from './contexts/AppContext';
+
+const globalState = {
+  title: 'O título que contexto',
+  body: 'O body do contexto',
+  counter: 0,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'muda': {
+      console.log('Chamou muda com', action.payload);
+      return { ...state, title: action.payload };
+    }
+    case 'inverter': {
+      const { title } = state;
+      console.log('Chamou inverter');
+      return { ...state, title: title.split('').reverse().join('') };
+    }
+  }
+
+  console.log('NENHUMA ACTION ENCONTRADA');
+
+  return {
+    ...state,
+  };
+};
 
 function App() {
+  const [state, dispatch] = useReducer(reducer, globalState);
+  const { counter, title, body } = state;
+
   return (
-    <AppContext>
-      <Div />
-    </AppContext>
+    <div>
+      <h1>
+        {title} {counter}
+      </h1>
+      <button onClick={() => dispatch({ type: 'muda', payload: new Date().toLocaleString('pt-BR') })}>Click</button>
+      <button onClick={() => dispatch({ type: 'inverter' })}>Invert</button>
+      <button onClick={() => dispatch({ type: 'QUALQUERCOISA' })}>SEM ACTION</button>
+    </div>
   );
 }
 
