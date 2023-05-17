@@ -1,85 +1,28 @@
-import { useCallback, useEffect, useState } from 'react';
-
-const useAsync = (asyncFunction, shouldRun) => {
-  const [state, setState] = useState({
-    result: null,
-    error: null,
-    status: 'idle',
-  });
-
-  const run = useCallback(async () => {
-    setState({
-      result: null,
-      error: null,
-      status: 'pending',
-    });
-
-    return asyncFunction()
-      .then((response) => {
-        setState({
-          result: response,
-          error: null,
-          status: 'settled',
-        });
-      })
-      .catch((error) => {
-        setState({
-          result: null,
-          error: error,
-          status: 'error',
-        });
-      });
-  }, [asyncFunction]);
-
-  useEffect(() => {
-    if (shouldRun) run();
-  }, [run, shouldRun]);
-
-  return [run, state.result, state.error, state.status];
-};
-
-const fetchData = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  const data = await fetch('https://jsonplaceholder.typicode.com/posts');
-  const json = await data.json();
-
-  return json;
-};
+import { useLayoutEffect, useRef, useState } from 'react';
 
 export const Home = () => {
-  const [posts, setPosts] = useState(null);
-  const [reFetchData, result, error, status] = useAsync(fetchData, true);
-  const [reFetchData2, result2, error2, status2] = useAsync(fetchData, true);
+  const [counted, setCounted] = useState([0, 1, 2, 3, 4]);
+  const divRef = useRef();
 
-  useEffect(() => {
-    console.log(result2);
-  }, [result2]);
+  useLayoutEffect(() => {
+    const now = Date.now();
 
-  useEffect(() => {
-    setTimeout(() => {
-      reFetchData();
-    }, 6000);
-  }, [reFetchData]);
+    while (Date.now() < now + 3000);
+    divRef.current.scrollTop = divRef.current.scrollHeight;
+  });
 
   const handleClick = () => {
-    reFetchData();
+    setCounted((prevCount) => [...prevCount, prevCount.slice(-1)[0] + 1]);
   };
 
-  if (status === 'idle') {
-    return <pre>idle: Nada Executando</pre>;
-  }
-
-  if (status === 'pending') {
-    return <pre>pending: Loading...</pre>;
-  }
-
-  if (status === 'error') {
-    return <pre>error: {error.message}</pre>;
-  }
-
-  if (status === 'settled') {
-    return <pre onClick={handleClick}>settled: {JSON.stringify(result, null, 2)}</pre>;
-  }
-
-  return 'IXIIII';
+  return (
+    <>
+      <button onClick={handleClick}>Count {counted.slice(-1)}</button>
+      <div ref={divRef} style={{ height: '100px', width: '100px', overflowY: 'scroll' }}>
+        {counted.map((count) => (
+          <p key={`c-${count}`}>{count}</p>
+        ))}
+      </div>
+    </>
+  );
 };
