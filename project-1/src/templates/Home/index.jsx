@@ -1,50 +1,37 @@
-import { forwardRef, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
+import { forwardRef, useDebugValue, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 
-export const Home = () => {
-  const [counted, setCounted] = useState([0, 1, 2, 3, 4]);
-  const divRef = useRef();
+const useMediaQuery = (queryValue, initialValue = false) => {
+  const [match, setMatch] = useState(initialValue);
 
-  useLayoutEffect(() => {
-    const now = Date.now();
+  useDebugValue(`Query: ${queryValue}`, (name) => name + ' modificado');
 
-    while (Date.now() < now + 300);
-    divRef.current.divRef.scrollTop = divRef.current.divRef.scrollHeight;
-  });
+  useEffect(() => {
+    let isMounted = true;
+    const matchMedia = window.matchMedia(queryValue);
 
-  const handleClick = () => {
-    setCounted((prevCount) => [...prevCount, prevCount.slice(-1)[0] + 1]);
-    console.log(divRef.current);
-    divRef.current.handleClick();
-  };
+    const handleChange = () => {
+      if (!isMounted) return;
 
-  return (
-    <>
-      <button onClick={handleClick}>Count {counted.slice(-1)}</button>
-      <DisplayCounted counted={counted} ref={divRef} />
-    </>
-  );
+      setMatch(!!matchMedia.matches);
+    };
+
+    matchMedia.addEventListener('change', handleChange);
+    setMatch(!!matchMedia.matches);
+
+    return () => {
+      isMounted = false;
+      matchMedia.removeEventListener('change', handleChange);
+    };
+  }, [queryValue]);
+
+  return match;
 };
 
-export const DisplayCounted = forwardRef(function DisplayCounted({ counted }, ref) {
-  const [rand, setRand] = useState('0.24');
-  const divRef = useRef();
-
-  const handleClick = () => {
-    setRand(Math.random().toFixed(2));
-  };
-
-  useImperativeHandle(ref, () => ({
-    handleClick,
-    divRef: divRef.current,
-  }));
-
-  return (
-    <div ref={divRef} style={{ height: '100px', width: '100px', overflowY: 'scroll' }}>
-      {counted.map((count) => (
-        <p key={`c-${count}`} onClick={handleClick}>
-          {count} +++ {rand}
-        </p>
-      ))}
-    </div>
-  );
-});
+export const Home = () => {
+  const huge = useMediaQuery('(min-width: 980px)');
+  const big = useMediaQuery('(max-width: 979px) and (min-width: 768px)');
+  const medium = useMediaQuery('(max-width: 767px) and (min-width: 321px)');
+  const small = useMediaQuery('(max-width: 321px)');
+  const background = huge ? 'green' : big ? 'red' : medium ? 'yellow' : small ? 'purple' : null;
+  return <div style={{ fontSize: '60px', background }}>Oi</div>;
+};
