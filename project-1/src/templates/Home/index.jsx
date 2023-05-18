@@ -1,5 +1,4 @@
-// Compound Components
-import { Children, cloneElement, useState } from 'react';
+import { Children, cloneElement, createContext, useContext, useState } from 'react';
 
 const s = {
   style: {
@@ -7,25 +6,30 @@ const s = {
   },
 };
 
+const TurnOnOffContext = createContext();
+
 const TurnOnOff = ({ children }) => {
   const [isOn, setIsOn] = useState(false);
 
   const onTurn = () => setIsOn((prev) => !prev);
 
-  return Children.map(children, (child) => {
-    const newChild = cloneElement(child, {
-      isOn,
-      onTurn,
-    });
-
-    return newChild;
-  });
+  return <TurnOnOffContext.Provider value={{ isOn, onTurn }}>{children}</TurnOnOffContext.Provider>;
 };
 
-const TurnedOn = ({ isOn, children }) => (isOn ? children : null);
-const TurnedOff = ({ isOn, children }) => (isOn ? null : children);
+const TurnedOn = ({ children }) => {
+  const { isOn } = useContext(TurnOnOffContext);
 
-const TurnButton = ({ isOn, onTurn, ...props }) => {
+  return isOn ? children : null;
+};
+const TurnedOff = ({ children }) => {
+  const { isOn } = useContext(TurnOnOffContext);
+
+  return isOn ? null : children;
+};
+
+const TurnButton = ({ ...props }) => {
+  const { isOn, onTurn } = useContext(TurnOnOffContext);
+
   return (
     <button {...props} onClick={onTurn}>
       Turn {isOn ? 'ON' : 'OFF'}
@@ -38,12 +42,18 @@ const P = ({ children }) => <p {...s}>{children}</p>;
 export const Home = () => {
   return (
     <TurnOnOff>
-      <TurnedOn>
-        <P>Aqui as coisas que vão acontecer quando estiver ON.</P>
-      </TurnedOn>
-      <TurnedOff>
-        <P>Aqui vem as coisas do OFF.</P>
-      </TurnedOff>
+      <div>
+        <header>
+          <TurnedOff>
+            <P>Aqui vem as coisas do OFF.</P>
+          </TurnedOff>
+        </header>
+        <section>
+          <TurnedOn>
+            <P>Aqui as coisas que vão acontecer quando estiver ON.</P>
+          </TurnedOn>
+        </section>
+      </div>
       <TurnButton {...s} />
     </TurnOnOff>
   );
