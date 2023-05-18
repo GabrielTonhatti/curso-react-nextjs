@@ -1,6 +1,5 @@
-import { Component } from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
+// Compound Components
+import { Children, cloneElement, useState } from 'react';
 
 const s = {
   style: {
@@ -8,54 +7,44 @@ const s = {
   },
 };
 
-class MyErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+const TurnOnOff = ({ children }) => {
+  const [isOn, setIsOn] = useState(false);
 
-  static getDerivedStateFromError(error) {
-    console.log('getDerivedStateFromError');
-    return { hasError: true };
-  }
+  const onTurn = () => setIsOn((prev) => !prev);
 
-  componentDidCatch(error, errorInfo) {
-    // console.log(error, errorInfo);
-  }
+  return Children.map(children, (child) => {
+    const newChild = cloneElement(child, {
+      isOn,
+      onTurn,
+    });
 
-  render() {
-    if (this.state.hasError) {
-      return <p {...s}>Deu ruim =(</p>;
-    }
+    return newChild;
+  });
+};
 
-    return this.props.children;
-  }
-}
+const TurnedOn = ({ isOn, children }) => (isOn ? children : null);
+const TurnedOff = ({ isOn, children }) => (isOn ? null : children);
 
-const ItWillThorwError = () => {
-  const [counter, setCounter] = useState(0);
-
-  useEffect(() => {
-    if (counter > 3) {
-      throw new Error('Que chato!!!');
-    }
-  }, [counter]);
-
+const TurnButton = ({ isOn, onTurn, ...props }) => {
   return (
-    <div>
-      <button {...s} onClick={() => setCounter((prev) => prev + 1)}>
-        Click to increase {counter}
-      </button>
-    </div>
+    <button {...props} onClick={onTurn}>
+      Turn {isOn ? 'ON' : 'OFF'}
+    </button>
   );
 };
 
+const P = ({ children }) => <p {...s}>{children}</p>;
+
 export const Home = () => {
   return (
-    <div {...s}>
-      <MyErrorBoundary>
-        <ItWillThorwError />
-      </MyErrorBoundary>
-    </div>
+    <TurnOnOff>
+      <TurnedOn>
+        <P>Aqui as coisas que vão acontecer quando estiver ON.</P>
+      </TurnedOn>
+      <TurnedOff>
+        <P>Aqui vem as coisas do OFF.</P>
+      </TurnedOff>
+      <TurnButton {...s} />
+    </TurnOnOff>
   );
 };
