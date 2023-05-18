@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useReducer, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { reducer } from './reducer';
+import { buildActions } from './buildActions';
 
 export const initialState = {
   counter: 0,
@@ -9,9 +11,10 @@ export const initialState = {
 const Context = createContext();
 
 export const CounterContextProvider = ({ children }) => {
-  const [state, dispatch] = useState(initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const actions = useRef(buildActions(dispatch));
 
-  return <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>;
+  return <Context.Provider value={[state, actions.current]}>{children}</Context.Provider>;
 };
 
 CounterContextProvider.propTypes = {
