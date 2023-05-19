@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import { PostsContext } from '../../contexts/PostsProvider/context';
-import { loadPosts } from '../../contexts/PostsProvider/actions';
-import { CounterContext } from '../../contexts/CounterProvider/context';
 import { decrementCounter, incrementCounter } from '../../contexts/CounterProvider/actions';
+import { CounterContext } from '../../contexts/CounterProvider/context';
+import { loadPosts } from '../../contexts/PostsProvider/actions';
+import { PostsContext } from '../../contexts/PostsProvider/context';
 
 const Posts = () => {
   const isMounted = useRef(true);
