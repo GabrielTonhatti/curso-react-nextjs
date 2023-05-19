@@ -1,18 +1,9 @@
-import React, { useEffect } from 'react';
-import { useLocation, useParams, useHistory } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
 const Abc = () => {
   const { slug, id } = useParams();
-  const location = useLocation();
-  const history = useHistory();
-
-  console.log('history', history);
-
-  useEffect(() => {
-    setTimeout(() => {
-      history.push('/');
-    }, 5000);
-  }, [history]);
+  console.log(slug);
 
   return (
     <div>

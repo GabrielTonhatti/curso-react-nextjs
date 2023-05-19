@@ -6,16 +6,6 @@ import './styles.css';
 import { useEffect } from 'react';
 
 export function App() {
-  const history = useHistory();
-
-  console.log('history', history);
-
-  useEffect(() => {
-    setTimeout(() => {
-      history.push('/abc');
-    }, 5000);
-  }, [history]);
-
   return (
     <CounterProvider>
       <PostsProvider>
