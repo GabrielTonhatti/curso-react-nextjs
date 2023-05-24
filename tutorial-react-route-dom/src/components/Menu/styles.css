@@ -1,0 +1,5 @@
+.menu ul {
+  gap: 30px;
+  display: flex;
+  list-style: none;
+}
