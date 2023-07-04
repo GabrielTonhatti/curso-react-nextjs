@@ -17,12 +17,14 @@ const Redirect: () => ReactElement = (): ReactElement => {
   useEffect(() => {
     clearTimeout(timeout.current);
 
-    timeout.current = setTimeout(() => {
-      setTime((t) => t - 1);
+    timeout.current = setTimeout((): void => {
+      setTime((t: number): number => t - 1);
     }, 1000);
 
     if (time <= 0) {
-      navigate("/about");
+      navigate("/about", {
+        state: `This is the state: ${Math.random()}`,
+      });
     }
 
     return (): void => {

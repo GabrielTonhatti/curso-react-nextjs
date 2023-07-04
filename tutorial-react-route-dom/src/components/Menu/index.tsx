@@ -10,7 +10,9 @@ const Menu: () => ReactElement = (): ReactElement => {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="/about">About</Link>
+          <Link to="/about" state="This is state from HOME">
+            About
+          </Link>
         </li>
         <li>
           <Link to="/posts">Posts</Link>
